@@ -47,14 +47,7 @@ export interface BuildOptions {
 export function build(options: BuildOptions, config: ProjectConfig): Promise<any> {
 
   return new Promise<any>((buildResolve, _) => {
-    let polymerProject = new PolymerProject({
-      root: config.root,
-      shell: config.shell,
-      entrypoint: config.entrypoint,
-      fragments: config.fragments,
-      sourceGlobs: config.sourceGlobs,
-      includeDependencies: config.includeDependencies,
-    });
+    let polymerProject = new PolymerProject(config);
 
     if (options.insertDependencyLinks) {
       logger.debug(`Additional dependency links will be inserted into application`);
@@ -95,9 +88,7 @@ export function build(options: BuildOptions, config: ProjectConfig): Promise<any
       .pipe(
         gulpif(
           options.insertDependencyLinks,
-          new PrefetchTransform(polymerProject.root, polymerProject.entrypoint,
-            polymerProject.shell, polymerProject.fragments,
-            polymerProject.analyzer)
+          new PrefetchTransform(polymerProject)
         )
       )
       .pipe(dest('build/unbundled'));
@@ -107,7 +98,7 @@ export function build(options: BuildOptions, config: ProjectConfig): Promise<any
       .pipe(polymerProject.bundler)
       .pipe(dest('build/bundled'));
 
-    let swPrecacheConfig = path.resolve(polymerProject.root, options.swPrecacheConfig || 'sw-precache-config.js');
+    let swPrecacheConfig = path.resolve(polymerProject.config.root, options.swPrecacheConfig || 'sw-precache-config.js');
     let loadSWConfig = parsePreCacheConfig(swPrecacheConfig);
 
     loadSWConfig.then((swConfig) => {
