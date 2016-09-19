@@ -1,4 +1,4 @@
-import {minify as uglify, MinifyOptions as UglifyOptions} from 'uglify-js';
+import {minify as uglify, MinifyOptions as UglifyOptions} from 'uglify-js-harmony';
 import {css as cssSlam} from 'css-slam';
 import {minify as htmlMinify, Options as HTMLMinifierOptions} from 'html-minifier';
 import {Transform} from 'stream';
